@@ -20,4 +20,4 @@
 #
 ## GraphQL Documentation
 #
-### GraphQL Schema and API documentation can be accessed at `http://localhost:3000/garphql`
+### GraphQL Schema and API documentation can be accessed at `http://localhost:3000/graphql`
