@@ -2,14 +2,13 @@ import { Field, ID, Int, ObjectType, InputType} from '@nestjs/graphql';
 
 @InputType()
 export class BrainDataParam {
-    @Field(type => Int) 
-    framId: number;
+    // not needed. Id isn't part of query
+    // @Field(type => Int) 
+    // framId: number;
 
-    @Field(type => Int)
-    nppmih_hours: number;
-
-    @Field(type => Int)
-    nppmih_minutes: number;
+    // commented out due to not being used by filter
+    // @Field(type => Int)
+    // nppmih_minutes: number;
 
     @Field(type => [Int])
     age_range: number[];
@@ -26,6 +25,7 @@ export class BrainDataParam {
     @Field(type => [Int])
     age_at_death: number[];
 
+    // will be an enum in near future
     @Field(type => [String], {nullable: true, description: 'Neurodiseases categories'})
     neurodiseases: string[] | null;
 }

@@ -1,11 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { BrainDataParam } from './models/brain_data.model';
+import { PrismaClient } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class BrainDataService {
+  // constructor (private prisma: PrismaService) {}
 
-  getSummary(params: BrainDataParam){
+
+  async getSummary(params: BrainDataParam){
     // returns an array of summaryData object. Each object reflects each row
+    // by the time getSummary is called, param is built and ready to use
+    // use prisma client to pull data from db and build the ret object
+   
+    
     const ret = [{
       type: 'F',
       total: 5,

@@ -8,10 +8,10 @@ datasource db {
 }
 
 model brain_data {
-  framid         Int                      @id @default(autoincrement())
+  framid         Int      @id @default(autoincrement())
   nppmih_hours   Int?
   nppmih_minutes Int?
-  nprin          Decimal?                 @db.Decimal
+  nprin          Decimal? @db.Decimal
   npfix          Int?
   npfrotispre    Int?
   npinf          Int?
@@ -198,6 +198,32 @@ model core_tests {
   @@id([framid, core_num, type])
 }
 
+model databasechangelog {
+  id            String   @db.VarChar(255)
+  author        String   @db.VarChar(255)
+  filename      String   @db.VarChar(255)
+  dateexecuted  DateTime @db.Timestamp(6)
+  orderexecuted Int
+  exectype      String   @db.VarChar(10)
+  md5sum        String?  @db.VarChar(35)
+  description   String?  @db.VarChar(255)
+  comments      String?  @db.VarChar(255)
+  tag           String?  @db.VarChar(255)
+  liquibase     String?  @db.VarChar(20)
+  contexts      String?  @db.VarChar(255)
+  labels        String?  @db.VarChar(255)
+  deployment_id String?  @db.VarChar(10)
+
+  @@unique([id, author, filename], map: "idx_databasechangelog_id_author_filename")
+}
+
+model databasechangeloglock {
+  id          Int       @id
+  locked      Boolean
+  lockgranted DateTime? @db.Timestamp(6)
+  lockedby    String?   @db.VarChar(255)
+}
+
 model dcdt_dates {
   framid    Int
   dcdt_date DateTime @db.Date
@@ -205,6 +231,15 @@ model dcdt_dates {
   sex       Int?
 
   @@id([framid, dcdt_date])
+}
+
+model derived_dcdt_dates {
+  framid            Int
+  derived_dcdt_date DateTime @db.Date
+  num_derived_dcdt  Int?
+  sex               Int?
+
+  @@id([framid, derived_dcdt_date])
 }
 
 model dvoice_dates {
@@ -234,11 +269,6 @@ model participants {
   edu_core2  Int?
   edu_core8  Int?
   core_tests core_tests[]
-}
-
-model setting {
-  key   String @id @db.VarChar(254)
-  value String
 }
 
 model survival {
