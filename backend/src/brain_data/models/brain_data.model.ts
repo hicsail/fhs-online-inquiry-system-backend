@@ -10,19 +10,19 @@ export class BrainDataParam {
     // @Field(type => Int)
     // nppmih_minutes: number;
 
-    @Field(type => [Int])
+    @Field(type => [Int], {nullable: true})
     age_range: number[];
     
-    @Field(type => [Int])
+    @Field(type => [Int], {nullable: true})
     bmi_range: number[];
 
-    @Field(type => [Int], {description: 'Postmortem Interval Hours as an array of Integers'}) //Postmortem Interval Hours 
+    @Field(type => [Int],{nullable: true, description: 'Postmortem Interval Hours as an array of Integers'}) //Postmortem Interval Hours 
     pmih: number[];
 
-    @Field(type => [Int], {description: 'Returns as an array of Integers'})
+    @Field(type => [Int], {nullable: true, description: 'Returns as an array of Integers'})
     rna_integrity: number[];
 
-    @Field(type => [Int])
+    @Field(type => [Int], {nullable: true})
     age_at_death: number[];
 
     // will be an enum in near future
