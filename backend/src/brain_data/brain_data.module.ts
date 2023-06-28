@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { BrainDataService } from './brain_data.service';
-import { BrainDataResolver } from './brain_data.resolver';
-import { PrismaService } from 'src/prisma.service';
-
+import { BrainDataController } from './brain_data.controller';
 
 @Module({
-  providers: [BrainDataResolver, BrainDataService, PrismaService]
+  controllers: [BrainDataController],
+  providers: [BrainDataService]
 })
 export class BrainDataModule {}
