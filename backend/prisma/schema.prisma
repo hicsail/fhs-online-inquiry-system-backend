@@ -7,8 +7,72 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model brain_data {
-  framid         Int      @id @default(autoincrement())
+  plus_framid    Int      @id
+  sex            Int?
+  age_core1      Int?
+  race_code      String?  @db.VarChar
+  edu_core0      Int?
+  edu_core17_1   Int?
+  edu_core17_2   Int?
+  edu_core2372   Int?
+  age_death      Decimal? @db.Decimal
+  npwhiart       Int?
+  npwhimac       Int?
+  npwmr          Int?
+  nphipscl       Int?
+  npthal         Int?
+  npbraak        Int?
+  npneur         Int?
+  npadnc         Int?
+  npdiff         Int?
+  npamy          Int?
+  npold          Int?
+  npold1         Int?
+  npold2         Int?
+  npold3         Int?
+  npold4         Int?
+  npoldd         Int?
+  npoldd1        Int?
+  npoldd2        Int?
+  npoldd3        Int?
+  npoldd4        Int?
+  nparter        Int?
+  nplbod         Int?
+  nptdpa         Int?
+  nptdpb         Int?
+  nptdpc         Int?
+  nptdpd         Int?
+  nptdpe         Int?
+  nppick         Int?
+  npftdt2        Int?
+  npcort         Int?
+  npprog         Int?
+  npftdt5        Int?
+  npftdt6        Int?
+  npftdt7        Int?
+  npftdt7a       Int?
+  npftdt7b       Int?
+  npftdt7c       Int?
+  npftdt7d       Int?
+  npftdt8        Int?
+  npftdt9        Int?
+  npftdt10       Int?
+  npalsmnd       Int?
+  npoftd         Int?
+  npoftd1        Int?
+  npoftd2        Int?
+  npoftd3        Int?
+  npoftd4        Int?
+  npoftd5        Int?
+  npnit          Int?
+  demrv046       Int?
+  demrv103       Int?
+  hrx_ever       Int?
+  dmrx_ever      Int?
+  liprx_ever     Int?
+  smoking_ever   Int?
   nppmih_hours   Int?
   nppmih_minutes Int?
   nprin          Decimal? @db.Decimal
@@ -17,16 +81,15 @@ model brain_data {
   npinf          Int?
   npavas         Int?
   npftdtau       Int?
-  npftdtdp       Int?
-  npftdt7        Int?
-  nphipscl       Int?
   pathmnd        Int?
   pathad         Int?
   relatauo       Int?
+  participants   participants @relation(fields: [plus_framid], references: [framid], onDelete: NoAction, onUpdate: NoAction)
+
 }
 
 model brain_data_plus {
-  framid       Int      @id @default(autoincrement())
+  plus_framid  Int      @id @default(autoincrement())
   sex          Int?
   age_core1    Int?
   race_code    String?  @db.VarChar
@@ -62,7 +125,6 @@ model brain_data_plus {
   nptdpc       Int?
   nptdpd       Int?
   nptdpe       Int?
-  npftdtau     Int?
   nppick       Int?
   npftdt2      Int?
   npcort       Int?
@@ -77,7 +139,6 @@ model brain_data_plus {
   npftdt8      Int?
   npftdt9      Int?
   npftdt10     Int?
-  npftdtdp     Int?
   npalsmnd     Int?
   npoftd       Int?
   npoftd1      Int?
@@ -198,32 +259,6 @@ model core_tests {
   @@id([framid, core_num, type])
 }
 
-model databasechangelog {
-  id            String   @db.VarChar(255)
-  author        String   @db.VarChar(255)
-  filename      String   @db.VarChar(255)
-  dateexecuted  DateTime @db.Timestamp(6)
-  orderexecuted Int
-  exectype      String   @db.VarChar(10)
-  md5sum        String?  @db.VarChar(35)
-  description   String?  @db.VarChar(255)
-  comments      String?  @db.VarChar(255)
-  tag           String?  @db.VarChar(255)
-  liquibase     String?  @db.VarChar(20)
-  contexts      String?  @db.VarChar(255)
-  labels        String?  @db.VarChar(255)
-  deployment_id String?  @db.VarChar(10)
-
-  @@unique([id, author, filename], map: "idx_databasechangelog_id_author_filename")
-}
-
-model databasechangeloglock {
-  id          Int       @id
-  locked      Boolean
-  lockgranted DateTime? @db.Timestamp(6)
-  lockedby    String?   @db.VarChar(255)
-}
-
 model dcdt_dates {
   framid    Int
   dcdt_date DateTime @db.Date
@@ -269,6 +304,7 @@ model participants {
   edu_core2  Int?
   edu_core8  Int?
   core_tests core_tests[]
+  brain_data brain_data[] 
 }
 
 model survival {
@@ -279,4 +315,3 @@ model survival {
 
   @@id([idtype, framid])
 }
-
