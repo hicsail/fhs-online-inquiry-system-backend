@@ -85,74 +85,7 @@ model brain_data {
   pathad         Int?
   relatauo       Int?
   participants   participants @relation(fields: [plus_framid], references: [framid], onDelete: NoAction, onUpdate: NoAction)
-
-}
-
-model brain_data_plus {
-  plus_framid  Int      @id @default(autoincrement())
-  sex          Int?
-  age_core1    Int?
-  race_code    String?  @db.VarChar
-  edu_core0    Int?
-  edu_core17_1 Int?
-  edu_core17_2 Int?
-  edu_core2372 Int?
-  age_death    Decimal? @db.Decimal
-  npwhiart     Int?
-  npwhimac     Int?
-  npwmr        Int?
-  nphipscl     Int?
-  npthal       Int?
-  npbraak      Int?
-  npneur       Int?
-  npadnc       Int?
-  npdiff       Int?
-  npamy        Int?
-  npold        Int?
-  npold1       Int?
-  npold2       Int?
-  npold3       Int?
-  npold4       Int?
-  npoldd       Int?
-  npoldd1      Int?
-  npoldd2      Int?
-  npoldd3      Int?
-  npoldd4      Int?
-  nparter      Int?
-  nplbod       Int?
-  nptdpa       Int?
-  nptdpb       Int?
-  nptdpc       Int?
-  nptdpd       Int?
-  nptdpe       Int?
-  nppick       Int?
-  npftdt2      Int?
-  npcort       Int?
-  npprog       Int?
-  npftdt5      Int?
-  npftdt6      Int?
-  npftdt7      Int?
-  npftdt7a     Int?
-  npftdt7b     Int?
-  npftdt7c     Int?
-  npftdt7d     Int?
-  npftdt8      Int?
-  npftdt9      Int?
-  npftdt10     Int?
-  npalsmnd     Int?
-  npoftd       Int?
-  npoftd1      Int?
-  npoftd2      Int?
-  npoftd3      Int?
-  npoftd4      Int?
-  npoftd5      Int?
-  npnit        Int?
-  demrv046     Int?
-  demrv103     Int?
-  hrx_ever     Int?
-  dmrx_ever    Int?
-  liprx_ever   Int?
-  smoking_ever Int?
+  
 }
 
 model core_sequence {
@@ -280,8 +213,8 @@ model derived_dcdt_dates {
 model dvoice_dates {
   framid      Int
   dvoice_date DateTime @db.Date
-  num_dvoice  Int?
   sex         Int?
+  
 
   @@id([framid, dvoice_date])
 }
@@ -289,8 +222,8 @@ model dvoice_dates {
 model mri_dates {
   framid   Int
   mri_date DateTime @db.Date
-  num_mri  Int?
   sex      Int?
+  
 
   @@id([framid, mri_date])
 }
@@ -299,12 +232,14 @@ model participants {
   framid     Int          @id @default(autoincrement())
   cohort     Int?
   id         Int?
-  gender     Int?
+  gender     Int
   race       String?      @db.VarChar
   edu_core2  Int?
   edu_core8  Int?
-  core_tests core_tests[]
+  mri_count  Int?
+  dvoice_count Int?
   brain_data brain_data[] 
+  core_tests core_tests[]
 }
 
 model survival {

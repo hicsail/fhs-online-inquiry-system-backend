@@ -2,18 +2,19 @@ import { IsInt, IsEnum, IsOptional} from "class-validator";
 import { ApiBody, ApiProduces, ApiProperty } from "@nestjs/swagger";
 
 // more categories can be added when options are finalized
+// make it into an object instead and have a more human-readable description.
 export enum Categories {
-    "Frozen Tissue Present" = "npfrotispre",
-    "Fixative" = "npfix",
-    "Observed infarcts" = "npinf",
-    "Chronic Traumatic Encephalopathy" = "npftdt7",
-    "Atherosclerosis Severity" = "npavas",
-    "ALS/Motor Neuron Disease" = "pathmnd",
-    "Derived AD Dementia" = "pathad",
-    "Age-related Tauopathy" = "relatauo",
-    "FTLD with Tau Pathology" = "npftdtau",
-    "FTLD with TDP-43" = "npftdtdp",
-    "Hippocampal Sclerosis" = "nphipscl"     
+    "npfrotispre",
+    "npfix",
+    "npinf",
+    "npftdt7",
+    "npavas",
+    "pathmnd",
+    "pathad",
+    "relatauo",
+    "npftdtau",
+    "npftdtdp",
+    "nphipscl"     
 }
 
 
@@ -38,21 +39,21 @@ export class FilterBrainData {
     @IsInt({
         each: true
     })
-    postmortem_interval_hours: number[];
+    nppmih_hours: number[];
     
     @ApiProperty({ type: [Number], example: [25,51], description: 'Type is an array of integers. Filters RNA integrity of participants'})
     @IsOptional()
     @IsInt({
         each: true
     })
-    rna_integrity: number[];
+    nprin: number[];
     
     @ApiProperty({ type: [Number], example: [25,51], description: 'Type is an array of integers. Filters age at death of participants'})
     @IsOptional()
     @IsInt({
         each: true
     })
-    age_at_death_range: number[];
+    age_death: number[];
     
     @ApiProperty({ type: [String], example: ["Fixative", "Frozen Tissue Present"], description: 'Type is an array of enum Categories.'})
     @IsOptional()
