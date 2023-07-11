@@ -1,19 +1,23 @@
 export class SummaryBrainData {
     type: string;
-    total: number;
-    average_age_at_death: number;
-    hs_grad: number;
-    college_grad: number;
-    mri_1: number; // 1+ MRI count for a participant
-    mri_2: number; // 2+ MRI count for a participant
-    mri_3: number; // 3+ MRI count for a participant
-    dvoice_1: number;
-    dvoice_2: number;
-    dvoice_3:number;
-    smoking_ever: number;
-    overall_dementia_probe: number;
-    hypertension_ever: number;
-    // hyperlipidemia_ever: number;
-    diabetic_ever: number;
-
+    total: number  = 0;
+    average_age_at_death: string = "0.0";
+    hs_grad: number = 0;
+    college_grad: number = 0;
+    mri_1: number = 0; // 1+ MRI count for a participant
+    mri_2: number = 0; // 2+ MRI count for a participant
+    mri_3: number = 0; // 3+ MRI count for a participant
+    dvoice_1: number = 0;
+    dvoice_2: number = 0;
+    dvoice_3:number = 0;
+    smoking_ever: number = 0;
+    overall_dementia_probe: number = 0;
+    hypertension_ever: number = 0;
+    hyperlipidemia_ever: number = 0;
+    diabetic_ever: number = 0;
+    
+    
+    constructor(type:string){
+        this.type = type;
+    }
 }

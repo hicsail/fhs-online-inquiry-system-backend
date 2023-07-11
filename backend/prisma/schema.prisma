@@ -17,7 +17,7 @@ model brain_data {
   edu_core17_1   Int?
   edu_core17_2   Int?
   edu_core2372   Int?
-  age_death      Decimal? @db.Decimal
+  age_death      Decimal  @db.Decimal
   npwhiart       Int?
   npwhimac       Int?
   npwmr          Int?
@@ -231,13 +231,13 @@ model mri_dates {
 model participants {
   framid     Int          @id @default(autoincrement())
   cohort     Int?
-  id         Int?
+  id         Int
   gender     Int
   race       String?      @db.VarChar
   edu_core2  Int?
   edu_core8  Int?
-  mri_count  Int?
-  dvoice_count Int?
+  mri_count  Int
+  dvoice_count Int
   brain_data brain_data[] 
   core_tests core_tests[]
 }
