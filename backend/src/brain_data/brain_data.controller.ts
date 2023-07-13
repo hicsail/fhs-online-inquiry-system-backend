@@ -9,8 +9,7 @@ export class BrainDataController {
   @Get()
   brainDataSummary(@Body() filter: FilterBrainData) {
     
-    // return this.brainDataService.getSummary(filter);
-    return `${JSON.stringify(filter)} is the filter used`;
+    return this.brainDataService.getSummary(filter);
   }
 
 }
