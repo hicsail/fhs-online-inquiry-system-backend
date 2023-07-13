@@ -1,4 +1,5 @@
 export class SummaryBrainData {
+    [key: string]: string | number | undefined;
     type: string;
     total: number  = 0;
     average_age_at_death: string = "0.0";
@@ -20,4 +21,6 @@ export class SummaryBrainData {
     constructor(type:string){
         this.type = type;
     }
+
+   
 }

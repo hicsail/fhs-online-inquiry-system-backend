@@ -14,9 +14,9 @@ export class BrainDataService {
   async getSummary(filter: FilterBrainData){
     
     // building filter for "categories"
-    const cat: any[] = Object.keys(filter.categories).map(key =>{
+    const cat: any[] = filter.categories?  Object.keys(filter.categories)?.map(key =>{
       return ( { [key] : { in : filter.categories[key]}}); 
-    });
+    }) : [];
 
     // building filter for filter with number[] type
     const conditions: any[] = Object.keys(filter)?.map(key => {
@@ -27,11 +27,11 @@ export class BrainDataService {
     }).filter((element) => element !== undefined);
     
     const queryFilter: any[] | undefined = conditions.concat(cat);
-    console.log(queryFilter)
+    
     const summaryArr:SummaryBrainData[] = [new SummaryBrainData("-"), new SummaryBrainData("Male"), new SummaryBrainData("Female")];
     const filteredData = await this.prisma.brain_data.findMany({
       where:{
-        AND:queryFilter
+        AND: queryFilter
       },
       include:{
         participants: {
@@ -45,6 +45,12 @@ export class BrainDataService {
         }
       }
     });
+    // const sexes = [0,1,2];
+    // for(const field of Object.keys(new SummaryBrainData(""))){
+    //   for(const sex of sexes){
+    //     console.log(summaryArr[sex][field] );//
+    //   }
+    // }
 
     const avg_death_arr: number[][] = [[],[],[]];
     filteredData.forEach(data => {
