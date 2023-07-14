@@ -4,7 +4,6 @@
 
 ## The system is built using the following tech stack
 1. NestJS ( Version 9.5.0 )
-2. GraphQL via NestJS ( @nestjs/graphql version 16.6.0 )
 3. PostgreSQL ( Version 14.7 )
 4. NodeJS ( Version 18.16.0 )
 
