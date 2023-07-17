@@ -145,6 +145,62 @@ model core_sequence {
   @@id([framid, core_num])
 }
 
+model np_core {
+  framid      Int       @id @default(autoincrement())
+  npwhiart    Int?
+  npwhimac    Int?
+  npwmr       Int?
+  nphipscl    Int?
+  npthal      Int?
+  npbraak     Int?
+  npneur      Int?
+  npadnc      Int?
+  npdiff      Int?
+  npamy       Int?
+  npold       Int?
+  npold1      Int?
+  npold2      Int?
+  npold3      Int?
+  npold4      Int?
+  npoldd      Int?
+  npoldd1     Int?
+  npoldd2     Int?
+  npoldd3     Int?
+  npoldd4     Int?
+  nparter     Int?
+  nplbod      Int?
+  nptdpa      Int?
+  nptdpb      Int?
+  nptdpc      Int?
+  nptdpd      Int?
+  nptdpe      Int?
+  npftdtau    Int?
+  nppick      Int?
+  npftdt2     Int?
+  npcort      Int?
+  npprog      Int?
+  npftdt5     Int?
+  npftdt6     Int?
+  npftdt7     Int?
+  npftdt7a    Int?
+  npftdt7b    Int?
+  npftdt7c    Int?
+  npftdt7d    Int?
+  npftdt8     Int?
+  npftdt9     Int?
+  npftdt10    Int?
+  npftdtdp    Int?
+  npalsmnd    Int?
+  npoftd      Int?
+  npoftd1     Int?
+  npoftd2     Int?
+  npoftd3     Int?
+  npoftd4     Int?
+  npoftd5     Int?
+  npnit       Int?
+  examdate_np DateTime? @db.Date
+}
+
 model core_tests {
   framid              Int
   core_num            Int
@@ -197,8 +253,6 @@ model core_tests {
 
   @@id([framid, core_num, type])
 }
-
-
 
 model dcdt_dates {
   framid    Int
@@ -255,4 +309,3 @@ model survival {
 
   @@id([idtype, framid])
 }
-
