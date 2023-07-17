@@ -198,31 +198,7 @@ model core_tests {
   @@id([framid, core_num, type])
 }
 
-model databasechangelog {
-  id            String   @db.VarChar(255)
-  author        String   @db.VarChar(255)
-  filename      String   @db.VarChar(255)
-  dateexecuted  DateTime @db.Timestamp(6)
-  orderexecuted Int
-  exectype      String   @db.VarChar(10)
-  md5sum        String?  @db.VarChar(35)
-  description   String?  @db.VarChar(255)
-  comments      String?  @db.VarChar(255)
-  tag           String?  @db.VarChar(255)
-  liquibase     String?  @db.VarChar(20)
-  contexts      String?  @db.VarChar(255)
-  labels        String?  @db.VarChar(255)
-  deployment_id String?  @db.VarChar(10)
 
-  @@unique([id, author, filename], map: "idx_databasechangelog_id_author_filename")
-}
-
-model databasechangeloglock {
-  id          Int       @id
-  locked      Boolean
-  lockgranted DateTime? @db.Timestamp(6)
-  lockedby    String?   @db.VarChar(255)
-}
 
 model dcdt_dates {
   framid    Int
