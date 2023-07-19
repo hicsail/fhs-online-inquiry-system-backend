@@ -18,7 +18,7 @@ export class BrainDataService {
 
     
     // building filter for "categories"
-    const cat: any[] = filter.categories?  Object.keys(filter.categories)?.map(key =>{
+    const cat: any[] = filter.categories?  Object.keys(filter.categories)?.map(key => {
       return ( { [key] : { in : filter.categories[key]}}); 
     }) : [];
 

@@ -15,8 +15,6 @@ export class Categories {
     npftdtau?: number; // possible values: [0,1]
     npftdtdp?: number; // possible values: [0,1]
     nphipscl?: number; // possible values: [0,1,2,3,9]
-
-    
 }
 
 
