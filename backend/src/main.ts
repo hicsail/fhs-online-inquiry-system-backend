@@ -22,6 +22,11 @@ async function bootstrap() {
 
   // helmet
   app.use(helmet());
+  // CORS
+  app.enableCors({
+    "methods": "POST",
+    // "origin": process.env.CORS_ALLOW_LIST 
+  });
   await app.listen(3000);
 }
 bootstrap();
