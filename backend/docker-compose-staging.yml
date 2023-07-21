@@ -1,0 +1,29 @@
+version: '1.0.0'
+
+services:
+  app:
+    container_name: inquiry_backend
+    image: hicsail/fhs-online-inquiry-system-backend:main
+    restart:  always
+    depends_on:
+      - db
+    ports:
+      - 3014:3000
+  db:
+    image:  postgres:14.7
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    restart:  always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 10
+      start_period: 30s
+    ports:
+        - '5435:5432'
+    volumes:
+        - ./fhs.sql:/docker-entrypoint-initdb.d/fhs.sql
+
