@@ -5,6 +5,8 @@ services:
     container_name: inquiry_backend
     image: hicsail/fhs-online-inquiry-system-backend:main
     restart:  always
+    env_file:
+      - ../stack.env
     depends_on:
       - db
     ports:
