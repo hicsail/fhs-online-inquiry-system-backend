@@ -20,7 +20,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ./backend
+          images: hicsail/fhs-online-inquiry-system-backend
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'
