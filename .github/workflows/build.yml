@@ -20,7 +20,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ./backend
+          images: hicsail/fhs-online-inquiry-system-backend
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -32,9 +32,7 @@ jobs:
         name: Build & Push Docker Build
         uses: docker/build-push-action@v4
         with:
-          context: ./packages/gateway
+          context: ./backend
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}'
-          cache-from: type=gha,scope=gateway
-          cache-to: type=gha,mode=max,scope=gateway
