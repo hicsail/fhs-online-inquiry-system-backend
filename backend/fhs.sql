@@ -134,7 +134,7 @@ CREATE TABLE public.brain_data (
 );
 
 
-ALTER TABLE public.brain_data   ;
+ALTER TABLE public.brain_data  OWNER TO postgres;
 
 --
 -- Name: brain_data_plus; Type: TABLE; Schema: public; Owner: postgres
@@ -208,7 +208,7 @@ CREATE TABLE public.brain_data_plus (
 );
 
 
-ALTER TABLE public.brain_data_plus   ;
+ALTER TABLE public.brain_data_plus OWNER TO postgres  ;
 
 --
 -- Name: brain_data_plus_framid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -223,7 +223,7 @@ CREATE SEQUENCE public.brain_data_plus_framid_seq
     CACHE 1;
 
 
-ALTER TABLE public.brain_data_plus_framid_seq   ;
+ALTER TABLE public.brain_data_plus_framid_seq  OWNER TO postgres ;
 
 --
 -- Name: brain_data_plus_framid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -286,7 +286,7 @@ CREATE TABLE public.core_sequence (
 );
 
 
-ALTER TABLE public.core_sequence   ;
+ALTER TABLE public.core_sequence  OWNER TO postgres ;
 
 --
 -- Name: core_tests; Type: TABLE; Schema: public; Owner: postgres
@@ -343,7 +343,7 @@ CREATE TABLE public.core_tests (
 );
 
 
-ALTER TABLE public.core_tests   ;
+ALTER TABLE public.core_tests  OWNER TO postgres ;
 
 --
 -- Name: dcdt_dates; Type: TABLE; Schema: public; Owner: postgres
@@ -357,7 +357,7 @@ CREATE TABLE public.dcdt_dates (
 );
 
 
-ALTER TABLE public.dcdt_dates   ;
+ALTER TABLE public.dcdt_dates  OWNER TO postgres ;
 
 --
 -- Name: derived_dcdt_dates; Type: TABLE; Schema: public; Owner: postgres
@@ -371,7 +371,7 @@ CREATE TABLE public.derived_dcdt_dates (
 );
 
 
-ALTER TABLE public.derived_dcdt_dates   ;
+ALTER TABLE public.derived_dcdt_dates  OWNER TO postgres ;
 
 --
 -- Name: dvoice_dates; Type: TABLE; Schema: public; Owner: postgres
@@ -385,7 +385,7 @@ CREATE TABLE public.dvoice_dates (
 );
 
 
-ALTER TABLE public.dvoice_dates   ;
+ALTER TABLE public.dvoice_dates  OWNER TO postgres ;
 
 --
 -- Name: mri_dates; Type: TABLE; Schema: public; Owner: postgres
@@ -399,7 +399,7 @@ CREATE TABLE public.mri_dates (
 );
 
 
-ALTER TABLE public.mri_dates   ;
+ALTER TABLE public.mri_dates  OWNER TO postgres ;
 
 --
 -- Name: participants; Type: TABLE; Schema: public; Owner: postgres
@@ -418,7 +418,7 @@ CREATE TABLE public.participants (
 );
 
 
-ALTER TABLE public.participants 
+ALTER TABLE public.participants OWNER TO postgres;
 
 --
 -- Name: participants_framid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -433,7 +433,7 @@ CREATE SEQUENCE public.participants_framid_seq
     CACHE 1;
 
 
-ALTER TABLE public.participants_framid_seq   ;
+ALTER TABLE public.participants_framid_seq  OWNER TO postgres ;
 
 --
 -- Name: participants_framid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -454,7 +454,7 @@ CREATE TABLE public.survival (
 );
 
 
-ALTER TABLE public.survival   ;
+ALTER TABLE public.survival OWNER TO postgres  ;
 
 --
 -- Name: brain_data_plus plus_framid; Type: DEFAULT; Schema: public; Owner: postgres
