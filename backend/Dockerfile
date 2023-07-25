@@ -1,6 +1,6 @@
 FROM node:18-alpine
 
-WORKDIR /backend
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 COPY prisma ./prisma/
