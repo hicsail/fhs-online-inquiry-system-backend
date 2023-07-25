@@ -11,7 +11,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 3002:3000
+      - 3014:3000
   db:
     image:  postgres:14.7
     environment:
@@ -25,7 +25,7 @@ services:
       retries: 10
       start_period: 30s
     ports:
-        - '5432:5432'
+        - '5436:5432'
     volumes:
-        - ./fhs.sql:/docker-entrypoint-initdb.d/fhs.sql
+        - ./fhs_2.sql:/docker-entrypoint-initdb.d/fhs_2.sql
 

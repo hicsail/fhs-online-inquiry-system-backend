@@ -13,14 +13,8 @@ SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET xmloption = content;
-SET client_min_messages = warning; 
+SET client_min_messages = warning;
 SET row_security = off;
-
---
--- Creating user "root" and make it a super user. Making the user in docker-compose a super user
---
-
-
 
 --
 -- Name: citext; Type: EXTENSION; Schema: -; Owner: -
@@ -37,15 +31,26 @@ COMMENT ON EXTENSION citext IS 'data type for case-insensitive character strings
 
 
 --
+-- Name: update_dvoice_count(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.update_dvoice_count() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$ BEGIN UPDATE participants SET dvoice_count = ( SELECT COUNT(*) FROM dvoice_dates WHERE dvoice_dates.framid = NEW.framid ) WHERE participants.framid = NEW.framid; RETURN NEW; END; $$;
+
+
+ALTER FUNCTION public.update_dvoice_count() OWNER TO postgres;
+
+--
 -- Name: update_mri_count(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION public.update_mri_count() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$ BEGIN UPDATE participants SET mri_count = ( SELECT COUNT(*) FROM mri_dates WHERE mri_dates.framid = participants.framid ) WHERE participants.framid = mri_dates.framid; RETURN NEW; END; $$;
+    AS $$ BEGIN UPDATE participants SET mri_count = ( SELECT COUNT(*) FROM mri_dates WHERE mri_dates.framid = NEW.framid ) WHERE participants.framid = NEW.framid; RETURN NEW; END; $$;
 
 
-ALTER FUNCTION public.update_mri_count();
+ALTER FUNCTION public.update_mri_count() OWNER TO postgres;
 
 SET default_tablespace = '';
 
@@ -134,7 +139,7 @@ CREATE TABLE public.brain_data (
 );
 
 
-ALTER TABLE public.brain_data   ;
+ALTER TABLE public.brain_data OWNER TO postgres;
 
 --
 -- Name: brain_data_plus; Type: TABLE; Schema: public; Owner: postgres
@@ -208,7 +213,7 @@ CREATE TABLE public.brain_data_plus (
 );
 
 
-ALTER TABLE public.brain_data_plus   ;
+ALTER TABLE public.brain_data_plus OWNER TO postgres;
 
 --
 -- Name: brain_data_plus_framid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -223,7 +228,7 @@ CREATE SEQUENCE public.brain_data_plus_framid_seq
     CACHE 1;
 
 
-ALTER TABLE public.brain_data_plus_framid_seq   ;
+ALTER TABLE public.brain_data_plus_framid_seq OWNER TO postgres;
 
 --
 -- Name: brain_data_plus_framid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -286,7 +291,7 @@ CREATE TABLE public.core_sequence (
 );
 
 
-ALTER TABLE public.core_sequence   ;
+ALTER TABLE public.core_sequence OWNER TO postgres;
 
 --
 -- Name: core_tests; Type: TABLE; Schema: public; Owner: postgres
@@ -343,7 +348,7 @@ CREATE TABLE public.core_tests (
 );
 
 
-ALTER TABLE public.core_tests   ;
+ALTER TABLE public.core_tests OWNER TO postgres;
 
 --
 -- Name: dcdt_dates; Type: TABLE; Schema: public; Owner: postgres
@@ -357,7 +362,7 @@ CREATE TABLE public.dcdt_dates (
 );
 
 
-ALTER TABLE public.dcdt_dates   ;
+ALTER TABLE public.dcdt_dates OWNER TO postgres;
 
 --
 -- Name: derived_dcdt_dates; Type: TABLE; Schema: public; Owner: postgres
@@ -371,7 +376,7 @@ CREATE TABLE public.derived_dcdt_dates (
 );
 
 
-ALTER TABLE public.derived_dcdt_dates   ;
+ALTER TABLE public.derived_dcdt_dates OWNER TO postgres;
 
 --
 -- Name: dvoice_dates; Type: TABLE; Schema: public; Owner: postgres
@@ -380,12 +385,11 @@ ALTER TABLE public.derived_dcdt_dates   ;
 CREATE TABLE public.dvoice_dates (
     framid integer NOT NULL,
     dvoice_date date NOT NULL,
-    num_dvoice integer,
     sex integer
 );
 
 
-ALTER TABLE public.dvoice_dates   ;
+ALTER TABLE public.dvoice_dates OWNER TO postgres;
 
 --
 -- Name: mri_dates; Type: TABLE; Schema: public; Owner: postgres
@@ -394,12 +398,11 @@ ALTER TABLE public.dvoice_dates   ;
 CREATE TABLE public.mri_dates (
     framid integer NOT NULL,
     mri_date date NOT NULL,
-    num_mri integer,
     sex integer
 );
 
 
-ALTER TABLE public.mri_dates   ;
+ALTER TABLE public.mri_dates OWNER TO postgres;
 
 --
 -- Name: participants; Type: TABLE; Schema: public; Owner: postgres
@@ -418,7 +421,7 @@ CREATE TABLE public.participants (
 );
 
 
-ALTER TABLE public.participants 
+ALTER TABLE public.participants OWNER TO postgres;
 
 --
 -- Name: participants_framid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -433,7 +436,7 @@ CREATE SEQUENCE public.participants_framid_seq
     CACHE 1;
 
 
-ALTER TABLE public.participants_framid_seq   ;
+ALTER TABLE public.participants_framid_seq OWNER TO postgres;
 
 --
 -- Name: participants_framid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -454,7 +457,7 @@ CREATE TABLE public.survival (
 );
 
 
-ALTER TABLE public.survival   ;
+ALTER TABLE public.survival OWNER TO postgres;
 
 --
 -- Name: brain_data_plus plus_framid; Type: DEFAULT; Schema: public; Owner: postgres
@@ -558,28 +561,29 @@ COPY public.derived_dcdt_dates (framid, derived_dcdt_date, num_derived_dcdt, sex
 -- Data for Name: dvoice_dates; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.dvoice_dates (framid, dvoice_date, num_dvoice, sex) FROM stdin;
-1	2006-11-08	3	1
-1	2010-01-15	3	1
-1	2011-07-29	3	1
-7	2005-09-27	3	1
-7	2006-10-03	3	1
-7	2009-04-24	3	1
-0	2006-08-11	4	1
-0	2008-12-03	4	1
-0	2012-08-02	4	1
-0	2018-12-03	4	1
-6	2012-03-28	1	1
-8	2006-02-23	3	1
-8	2011-10-11	3	1
-8	2019-03-28	3	1
-10	2008-09-12	2	2
-10	2014-05-13	2	2
-3	2009-09-25	2	2
-3	2016-11-28	2	2
-9	2010-07-30	1	2
-10	2012-06-29	2	1
-10	2018-08-27	2	1
+COPY public.dvoice_dates (framid, dvoice_date, sex) FROM stdin;
+1	2006-11-08	1
+1	2010-01-15	1
+1	2011-07-29	1
+7	2005-09-27	1
+7	2006-10-03	1
+7	2009-04-24	1
+0	2006-08-11	1
+0	2008-12-03	1
+0	2012-08-02	1
+0	2018-12-03	1
+6	2012-03-28	1
+8	2006-02-23	1
+8	2011-10-11	1
+8	2019-03-28	1
+10	2008-09-12	2
+10	2014-05-13	2
+3	2009-09-25	2
+3	2016-11-28	2
+9	2010-07-30	2
+10	2012-06-29	1
+10	2018-08-27	1
+7	2017-01-31	1
 \.
 
 
@@ -587,34 +591,35 @@ COPY public.dvoice_dates (framid, dvoice_date, num_dvoice, sex) FROM stdin;
 -- Data for Name: mri_dates; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.mri_dates (framid, mri_date, num_mri, sex) FROM stdin;
-1	2000-04-08	7	1
-1	2001-09-25	7	1
-1	2002-12-10	7	1
-1	2004-01-27	7	1
-1	2005-05-03	7	1
-1	2006-11-08	7	1
-1	2008-09-15	7	1
-6	2000-06-25	1	2
-7	2000-04-19	2	1
-7	2003-06-26	2	1
-0	1999-08-17	3	1
-0	2006-08-11	3	1
-0	2012-08-02	3	1
-4	1999-08-12	1	1
-6	2000-03-20	5	1
-6	2002-05-20	5	1
-6	2004-11-16	5	1
-6	2007-02-09	5	1
-6	2012-03-28	5	1
-8	1999-06-04	3	1
-8	2006-02-23	3	1
-8	2011-10-11	3	1
-10	2008-09-12	1	2
-3	2009-09-25	2	2
-3	2016-11-28	2	2
-9	2010-07-30	1	2
-10	2012-06-29	1	1
+COPY public.mri_dates (framid, mri_date, sex) FROM stdin;
+1	2000-04-08	1
+1	2001-09-25	1
+1	2002-12-10	1
+1	2004-01-27	1
+1	2005-05-03	1
+1	2006-11-08	1
+1	2008-09-15	1
+6	2000-06-25	2
+7	2000-04-19	1
+7	2003-06-26	1
+0	1999-08-17	1
+0	2006-08-11	1
+0	2012-08-02	1
+4	1999-08-12	1
+6	2000-03-20	1
+6	2002-05-20	1
+6	2004-11-16	1
+6	2007-02-09	1
+6	2012-03-28	1
+8	1999-06-04	1
+8	2006-02-23	1
+8	2011-10-11	1
+10	2008-09-12	2
+3	2009-09-25	2
+3	2016-11-28	2
+9	2010-07-30	2
+10	2012-06-29	1
+1	2013-08-10	1
 \.
 
 
@@ -624,16 +629,16 @@ COPY public.mri_dates (framid, mri_date, num_mri, sex) FROM stdin;
 
 COPY public.participants (framid, cohort, id, gender, race, edu_core2, edu_core8, mri_count, dvoice_count) FROM stdin;
 0	0	31	2	EW	16	7	3	4
-1	0	127	1	EW	20	8	7	3
 2	0	128	1	EW	16	7	0	0
 3	0	167	2	EW	13	5	2	2
 4	0	253	1	EW	12	3	1	0
 5	0	266	2	EW	16	7	0	0
 6	0	317	2	EW	13	5	6	1
-7	0	345	1	EW	20	8	2	3
 8	0	428	1	EW	13	4	3	3
 9	0	488	2	EW	\N	\N	1	1
 10	0	533	2	EW	20	8	2	4
+1	0	127	1	EW	20	8	8	3
+7	0	345	1	EW	20	8	2	4
 \.
 
 
@@ -748,6 +753,13 @@ ALTER TABLE ONLY public.participants
 
 ALTER TABLE ONLY public.survival
     ADD CONSTRAINT survival_pkey PRIMARY KEY (idtype, framid);
+
+
+--
+-- Name: dvoice_dates update_dvoice_count_trigger; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER update_dvoice_count_trigger AFTER INSERT ON public.dvoice_dates FOR EACH ROW EXECUTE FUNCTION public.update_dvoice_count();
 
 
 --
