@@ -13,18 +13,6 @@ export class BrainDataService {
 
   constructor(private prisma: PrismaService) {}
 
-// total
-// average_age_at_death
-// hs_grad
-// college_grad
-
-// smoking_ever
-// overall_dementia_probe
-// hypertension_ever
-// hyperlipidemia_ever
-// diabetic_ever
-
-
   fieldMap = {
     "total": (data:any) => {1},
     "average_age_at_death" : (data:any) => { data["age_death"] },
@@ -74,21 +62,6 @@ export class BrainDataService {
         }
       }
     });
-    
-    // const sexes = [0,1,2];
-    // for(const field of Object.keys(new SummaryBrainData(""))){ 
-    //   for(const sex of sexes){
-    //     if(field === "mri_1" || field === "mri_2" || field === "mri_3" || field === 'dvoice_1' || field === 'dvoice_2' || field === 'dvoice_3' || field === 'type'){
-    //       continue;
-    //     }
-    //     console.log(field);
-    //     const d = field;
-    //     // summaryArr[sex][field] = this.fieldMap[field](filteredData[1])
-    //     console.log(this.fieldMap[d](filteredData[1]));
-    //   }
-    // }
-
-
     
     const avg_death_arr: number[][] = [[],[],[]];
       filteredData.forEach(data => {
