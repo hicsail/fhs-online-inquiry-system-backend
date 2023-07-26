@@ -2,9 +2,6 @@ FROM node:18-alpine
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-COPY prisma ./prisma/
-COPY tsconfig.json ./
 COPY . .
 
 RUN npm install
