@@ -6,19 +6,32 @@ import { SummaryBrainData } from './dto/summary_brain_data.dto';
 import { std, mean, round } from 'mathjs';
 
 
+
 @Injectable()
 export class BrainDataService {
 
+
   constructor(private prisma: PrismaService) {}
+
+  fieldMap = {
+    "total": (data:any) => {1},
+    "average_age_at_death" : (data:any) => { data["age_death"] },
+    "hs_grad": (data:any) => { data["edu_core2"] >= 12 ? 1 : 0 },
+    "college_grad": (data:any) => { data["edu_core2"] >= 16 ? 1 : 0 },
+    "smoking_ever": (data: any) => {data["smoking_ever"] > 0 ? 1 : 0;},
+    "overall_dementia_probe": (data:any) => {data["demrv046"] > 0 ? 1 : 0},
+    "hypertension_ever": (data:any) => {data["hrx_ever"] > 0 ? 1 : 0},
+    "hyperlipidemia_ever": (data:any) => {data["liprx_ever"] > 0 ? 1 : 0},
+    "diabetic_ever": (data:any) => {data["dmrx_ever"] > 0 ? 1 : 0}
+  }
 
   async getSummary(filter: FilterBrainData){
     // describes minimum number of datapoints are needed after filtering for summary to be sent
     // implemented as a way for smart anonymization 
     const threshold = 5; 
-
-    
+    console.log(process.env.DATABASE_URL);
     // building filter for "categories"
-    const cat: any[] = filter.categories?  Object.keys(filter.categories)?.map(key =>{
+    const cat: any[] = filter.categories?  Object.keys(filter.categories)?.map(key => {
       return ( { [key] : { in : filter.categories[key]}}); 
     }) : [];
 
@@ -49,13 +62,7 @@ export class BrainDataService {
         }
       }
     });
-    // const sexes = [0,1,2];
-    // for(const field of Object.keys(new SummaryBrainData(""))){
-    //   for(const sex of sexes){
-    //     console.log(summaryArr[sex][field] );//
-    //   }
-    // }
-
+    
     const avg_death_arr: number[][] = [[],[],[]];
       filteredData.forEach(data => {
           if(!data.sex){
@@ -137,4 +144,5 @@ export class BrainDataService {
         return summaryArr;
       }
     }
+    
 }
