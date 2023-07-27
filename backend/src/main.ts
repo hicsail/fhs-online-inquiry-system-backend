@@ -25,7 +25,7 @@ async function bootstrap() {
   // CORS
   app.enableCors({
     "methods": "POST",
-    // "origin": process.env.CORS_ALLOW_LIST 
+    "origin": ["https://test-fhs.sail.codes/"]
   });
   await app.listen(3000);
 }
