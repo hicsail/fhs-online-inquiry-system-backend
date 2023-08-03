@@ -1,11 +1,9 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Logger} from '@nestjs/common';
 import { FilterBrainData, Categories } from './dto/filter_brain_data.dto';
-import { PrismaClient } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { SummaryBrainData } from './dto/summary_brain_data.dto';
 import { std, mean, round } from 'mathjs';
-
-
+import { createLogger, format, transports } from 'winston';
 
 @Injectable()
 export class BrainDataService {
@@ -24,12 +22,28 @@ export class BrainDataService {
     "hyperlipidemia_ever": (data:any) => {data["liprx_ever"] > 0 ? 1 : 0},
     "diabetic_ever": (data:any) => {data["dmrx_ever"] > 0 ? 1 : 0}
   }
-
+//
   async getSummary(filter: FilterBrainData){
+    
+    const logger = createLogger({
+      level: 'error',
+      format: format.combine(
+        format.timestamp({
+          format: 'YYYY-MM-DD HH:mm:ss'
+        }),
+        format.errors({ stack: process.env.ENV === 'DEV'}),
+        format.json(),
+        format.splat()
+      ),
+      transports: [
+        new transports.File({ filename: process.env.ENV === 'DEV' ? 'test-logs.log' : 'error-logs.log', level: 'error'})
+      ]
+    });
+
+    try{
     // describes minimum number of datapoints are needed after filtering for summary to be sent
-    // implemented as a way for smart anonymization 
+    // implemented as a way for smart anonymization. Include number in .env file in future update
     const threshold = 5; 
-    console.log(process.env.DATABASE_URL);
     // building filter for "categories"
     const cat: any[] = filter.categories?  Object.keys(filter.categories)?.map(key => {
       return ( { [key] : { in : filter.categories[key]}}); 
@@ -64,7 +78,7 @@ export class BrainDataService {
     });
     
     const avg_death_arr: number[][] = [[],[],[]];
-      filteredData.forEach(data => {
+    filteredData.forEach(data => {
           if(!data.sex){
           }else{
             summaryArr[data.sex].total++;
@@ -123,7 +137,7 @@ export class BrainDataService {
             }
 
           }
-      });
+    });
 
       if(filteredData.length > 0 && filteredData.length <= threshold){
         throw new HttpException({
@@ -143,6 +157,23 @@ export class BrainDataService {
         }
         return summaryArr;
       }
+    }catch(err){
+      // make some sort of custom error to send to client side.
+      // only needs an error message and code. 
+      // avoid stack tracing
+      // should probably replicate this to logger too
+      var e;
+      if(process.env.ENV === 'DEV'){
+        e = new Error(`Error with getting data summary. Cause: ${err.message}`);
+
+      }else{
+        e = new Error("Error with getting data summary. Try again")
+      }
+      logger.error(err)
+      return e.message;
     }
+    
+    
+  }
     
 }
