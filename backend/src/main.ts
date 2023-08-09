@@ -31,8 +31,9 @@ async function bootstrap() {
   app.use(helmet());
   // CORS
   app.enableCors({
-    "methods": "POST",
-    "origin": process.env.CORS_ALLOW_LIST
+    "methods" : "POST",
+    "origin" : process.env.CORS_ALLOW_LIST,
+    "allowedHeaders" : ['Content-Type', 'Authorization']
   });
   // CSRF
   app.use(nestCsrf());
