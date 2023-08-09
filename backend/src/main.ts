@@ -6,16 +6,17 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { nestCsrf, CsrfFilter} from "ncsrf";
 import cookieParser from "cookie-parser";
 import helmet from 'helmet';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ['error']
   });
   
   // payload validation pipes
   app.useGlobalPipes(new ValidationPipe());
-
+  app.useBodyParser('json', {limit: '100mb'})
   // swagger documentation
   const config = new DocumentBuilder()
     .setTitle('Brain Aging Program Data')
