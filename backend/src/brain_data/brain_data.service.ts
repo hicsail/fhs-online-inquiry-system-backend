@@ -1,37 +1,38 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Logger} from '@nestjs/common';
 import { FilterBrainData, Categories } from './dto/filter_brain_data.dto';
-import { PrismaClient } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
-import { SummaryBrainData } from './dto/summary_brain_data.dto';
+import { SummaryBrainData, summarize } from './dto/summary_brain_data.dto';
 import { std, mean, round } from 'mathjs';
-
-
+import { createLogger, format, transports } from 'winston';
+import { Http } from 'winston/lib/winston/transports';
 
 @Injectable()
 export class BrainDataService {
 
-
   constructor(private prisma: PrismaService) {}
-
-  fieldMap = {
-    "total": (data:any) => {1},
-    "average_age_at_death" : (data:any) => { data["age_death"] },
-    "hs_grad": (data:any) => { data["edu_core2"] >= 12 ? 1 : 0 },
-    "college_grad": (data:any) => { data["edu_core2"] >= 16 ? 1 : 0 },
-    "smoking_ever": (data: any) => {data["smoking_ever"] > 0 ? 1 : 0;},
-    "overall_dementia_probe": (data:any) => {data["demrv046"] > 0 ? 1 : 0},
-    "hypertension_ever": (data:any) => {data["hrx_ever"] > 0 ? 1 : 0},
-    "hyperlipidemia_ever": (data:any) => {data["liprx_ever"] > 0 ? 1 : 0},
-    "diabetic_ever": (data:any) => {data["dmrx_ever"] > 0 ? 1 : 0}
-  }
-
   async getSummary(filter: FilterBrainData){
+    
+    const logger = createLogger({
+      level: 'error',
+      format: format.combine(
+        format.timestamp({
+          format: 'YYYY-MM-DD HH:mm:ss'
+        }),
+        format.errors({ stack: process.env.ENV === 'DEV'}),
+        format.json(),
+        format.splat()
+      ),
+      transports: [
+        new transports.File({ filename: process.env.ENV === 'DEV' ? 'test-logs.log' : 'error-logs.log', level: 'error'})
+      ]
+    });
+
+    try{
     // describes minimum number of datapoints are needed after filtering for summary to be sent
-    // implemented as a way for smart anonymization 
+    // implemented as a way for smart anonymization. Include number in .env file in future update
     const threshold = 5; 
-    console.log(process.env.DATABASE_URL);
     // building filter for "categories"
-    const cat: any[] = filter.categories?  Object.keys(filter.categories)?.map(key => {
+    const cat: any[] = filter.categories ? Object.keys(filter.categories)?.map(key => {
       return ( { [key] : { in : filter.categories[key]}}); 
     }) : [];
 
@@ -45,104 +46,36 @@ export class BrainDataService {
     
     const queryFilter: any[] | undefined = conditions.concat(cat);
     
-    const summaryArr:SummaryBrainData[] = [new SummaryBrainData("-"), new SummaryBrainData("Male"), new SummaryBrainData("Female")];
     const filteredData = await this.prisma.brain_data.findMany({
       where:{
         AND: queryFilter
       },
       include:{
-        participants: {
-          select: {
-            mri_count: true,
-            dvoice_count: true,
-            gender: true,
-            edu_core2: true,
-            edu_core8: true
-          }
-        }
+        participants: true
       }
+    }).catch(err => {
+      logger.error(err);
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        error: `Unknown key passed`
+      },
+      HttpStatus.BAD_REQUEST);
     });
+    return summarize(filteredData, threshold);
     
-    const avg_death_arr: number[][] = [[],[],[]];
-      filteredData.forEach(data => {
-          if(!data.sex){
-          }else{
-            summaryArr[data.sex].total++;
-            summaryArr[0].total++;
-
-            avg_death_arr[data.sex].push(Number(data.age_death)); // need to assume that data will have age of death here
-            avg_death_arr[0].push(Number(data.age_death)); // need to assume that data will have age of death here
-            
-            data.smoking_ever ? (data.smoking_ever > 0 ? (summaryArr[data.sex].smoking_ever++) : summaryArr[data.sex].smoking_ever) : (summaryArr[data.sex].smoking_ever);
-            data.demrv046 ? (data.demrv046 > 0 ? summaryArr[data.sex].overall_dementia_probe++ : summaryArr[data.sex].overall_dementia_probe) : (summaryArr[data.sex].overall_dementia_probe);
-            data.hrx_ever ? (data.hrx_ever > 0 ? summaryArr[data.sex].hypertension_ever++ : summaryArr[data.sex].hypertension_ever) : (summaryArr[data.sex].hypertension_ever);
-            data.dmrx_ever ? (data.dmrx_ever > 0 ? summaryArr[data.sex].diabetic_ever++ : summaryArr[data.sex].diabetic_ever) : (summaryArr[data.sex].diabetic_ever);
-            data.liprx_ever ? (data.liprx_ever > 0 ? summaryArr[data.sex].hyperlipidemia_ever++ : summaryArr[data.sex].hyperlipidemia_ever) : (summaryArr[data.sex].hyperlipidemia_ever);
-
-            data.smoking_ever ? (data.smoking_ever > 0 ? summaryArr[0].smoking_ever++ : summaryArr[0].smoking_ever) : (summaryArr[0].smoking_ever);
-            data.demrv046 ? (data.demrv046 > 0 ? summaryArr[0].overall_dementia_probe++ : summaryArr[0].overall_dementia_probe) : (summaryArr[0].overall_dementia_probe);
-            data.hrx_ever ? (data.hrx_ever > 0 ? summaryArr[0].hypertension_ever++ : summaryArr[0].hypertension_ever) : (summaryArr[0].hypertension_ever);
-            data.dmrx_ever ? (data.dmrx_ever > 0 ? summaryArr[0].diabetic_ever++ : summaryArr[0].diabetic_ever) : (summaryArr[0].diabetic_ever);
-            data.liprx_ever ? (data.liprx_ever > 0 ? summaryArr[0].hyperlipidemia_ever++ : summaryArr[0].hyperlipidemia_ever) : (summaryArr[0].hyperlipidemia_ever);
-
-            if(data.participants.edu_core2){
-              if(data.participants.edu_core2 >= 12){
-                summaryArr[data.sex].hs_grad++;
-                summaryArr[0].hs_grad++;
-              }
-              if(data.participants.edu_core2 >= 16){
-                summaryArr[data.sex].college_grad++;
-                summaryArr[0].college_grad++;
-              }
-            }
-            
-            if(data.participants.mri_count >= 3){
-              summaryArr[data.sex].mri_3++;
-              summaryArr[0].mri_3++;
-            }
-            if(data.participants.mri_count >= 2){
-              summaryArr[data.sex].mri_2++;
-              summaryArr[0].mri_2++;
-            } 
-            if(data.participants.mri_count >= 1){
-              summaryArr[data.sex].mri_1++;
-              summaryArr[0].mri_1++;
-            }
-
-            if(data.participants.dvoice_count >= 3){
-              summaryArr[data.sex].dvoice_3++;
-              summaryArr[0].dvoice_3++;
-            }
-            if(data.participants.dvoice_count >= 2){
-              summaryArr[data.sex].dvoice_2++;
-              summaryArr[0].dvoice_2++;
-            }
-            if(data.participants.dvoice_count >= 1){
-              summaryArr[data.sex].dvoice_1++;
-              summaryArr[0].dvoice_1++;
-            }
-
-          }
-      });
-
-      if(filteredData.length > 0 && filteredData.length <= threshold){
-        throw new HttpException({
-          status: HttpStatus.PARTIAL_CONTENT,
-          error: `There are ${filteredData.length} participants that fit the criteriea. For the sake of privacy, we will not show the specifics. Please contact us for more info`,
-        }, 
-        HttpStatus.PARTIAL_CONTENT);
+    }catch(err){
+      var e;
+      if(process.env.ENV === 'DEV'){
+        e = new Error(`Error with getting data summary. Cause: ${err.message}`);
+        console.log(err);
       }else{
-        for(const i in avg_death_arr){
-          if(avg_death_arr[i].length === 0){
-            continue;
-          }
-          const mean_calc = round(mean(avg_death_arr[i]),3);
-          const stdDeviation = round(std(avg_death_arr[i]),3);
-          const avgStr = `${mean_calc} ± ${stdDeviation}`;
-          summaryArr[i].average_age_at_death = avgStr;
-        }
-        return summaryArr;
+        e = new Error(`Error with getting data summary with error code ${err.status} . Try again`)
       }
+      logger.error(err)
+      return e.message;
     }
+    
+    
+  }
     
 }

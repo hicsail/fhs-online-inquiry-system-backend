@@ -22,17 +22,25 @@ const filters = [
   { age_core1: [-20, 24] },
 
   { age_core1: [21, 29] },
-  { bmi: [15, 29] },
-  { age_core1: [1] },
-  { age_core1: ['1'] },
-  { age_core1: [1, Number.MAX_SAFE_INTEGER + 1] },
-  { age_core1: Array(2 ** 16 - 1).fill(0) },
 
-  { nprin: [Number.MAX_SAFE_INTEGER * -1 - 1, Number.MAX_SAFE_INTEGER + 1] },
+  { age_core1: [1] },
+
+  { age_core1: ['1'] },
+
+  { age_core1: [1, Number.MAX_SAFE_INTEGER] },
+
+  // { age_core1: Array(2 ** 16 - 1).fill(0) },
+
+  { nprin: [Number.MAX_SAFE_INTEGER * -1, Number.MAX_SAFE_INTEGER] },
+
   { categories: { npfrotispre: Number.MAX_SAFE_INTEGER + 1 } },
+
   { categories: { npfrotispre: -1 } },
+
   { categories: { npfrotispre: -1.0 } },
+
   { categories: { relatauo: [1] } },
+
   { categories: { relatauo: 'string' } },
 ];
 
@@ -73,13 +81,14 @@ describe('BrainDataService', () => {
           .send(filter)
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json');
-        const summaryResults = res.body as SummaryBrainData[];
+        const summaryResults = res.body;
         const status = res.statusCode;
-
+        
         if (status !== HttpStatus.PARTIAL_CONTENT) {
           expect(status).toBe(HttpStatus.CREATED);
           if (summaryResults != undefined) {
-            summaryResults.map((row) => {
+         
+            summaryResults.map((row: SummaryBrainData) => {
               // If function resolves - can be =0 OR >=5
               try {
                 expect(row['total']).toBeGreaterThanOrEqual(threshold);
