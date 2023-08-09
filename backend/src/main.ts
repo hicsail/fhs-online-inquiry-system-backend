@@ -32,7 +32,7 @@ async function bootstrap() {
   // CORS
   app.enableCors({
     "methods" : "POST",
-    "origin" : process.env.CORS_ALLOW_LIST,
+    "origin" : true,
     "allowedHeaders" : ['Content-Type', 'Authorization']
   });
   // CSRF
