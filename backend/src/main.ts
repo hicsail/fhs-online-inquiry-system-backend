@@ -28,11 +28,18 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   // HelmetJS
-  app.use(helmet());
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "script-src": ["'self'"],
+        "style-src": null,
+      },
+    },
+  }));
   // CORS
   app.enableCors({
     "methods" : "POST",
-    "origin" : true,
+    "origin" : process.env.CORS_ALLOW_LIST,
     "allowedHeaders" : ['Content-Type', 'Authorization']
   });
   // CSRF
