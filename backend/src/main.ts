@@ -28,21 +28,21 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   // HelmetJS
-  // app.use(helmet({
-  //   contentSecurityPolicy: {
-  //     directives: {
-  //       "script-src": ["'self'"],
-  //       "style-src": null,
-  //     },
-  //   },
-  // }));
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "script-src": ["'self'"],
+        "style-src": null,
+      },
+    },
+  }));
   // CORS
   // if(process.env.ENV === 'PROD'){
-  //   app.enableCors({
-  //     "methods" : "POST",
-  //     "origin" : process.env.CORS_ALLOW_LIST,
-  //     "allowedHeaders" : ['Content-Type', 'Authorization']
-  //   });
+    app.enableCors({
+      "methods" : "POST",
+      "origin" : process.env.CORS_ALLOW_LIST,
+      "allowedHeaders" : ['Content-Type', 'Authorization']
+    });
   // }
   await app.listen(3000);
 }
