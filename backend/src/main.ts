@@ -37,16 +37,13 @@ async function bootstrap() {
     },
   }));
   // CORS
-  app.enableCors({
-    "methods" : "POST",
-    "origin" : process.env.CORS_ALLOW_LIST,
-    "allowedHeaders" : ['Content-Type', 'Authorization']
-  });
-  // CSRF
-  app.use(nestCsrf());
-  
-
-
+  if(process.env.ENV === 'PROD'){
+    app.enableCors({
+      "methods" : "POST",
+      "origin" : process.env.CORS_ALLOW_LIST,
+      "allowedHeaders" : ['Content-Type', 'Authorization']
+    });
+  }
   await app.listen(3000);
 }
 bootstrap();
