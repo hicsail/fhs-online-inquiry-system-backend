@@ -37,13 +37,7 @@ async function bootstrap() {
     },
   }));
   // CORS
-  if(process.env.ENV === 'PROD'){
-    app.enableCors({
-      "methods" : "POST",
-      "origin" : process.env.CORS_ALLOW_LIST,
-      "allowedHeaders" : ['Content-Type', 'Authorization']
-    });
-  }
+  
   await app.listen(3000);
 }
 bootstrap();
