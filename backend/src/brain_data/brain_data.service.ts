@@ -27,7 +27,7 @@ export class BrainDataService {
       ]
     });
 
-    try{
+    
     // describes minimum number of datapoints are needed after filtering for summary to be sent
     // implemented as a way for smart anonymization. Include number in .env file in future update
     const threshold = 5; 
@@ -62,20 +62,6 @@ export class BrainDataService {
       HttpStatus.BAD_REQUEST);
     });
     return summarize(filteredData, threshold);
-    
-    }catch(err){
-      var e;
-      if(process.env.ENV === 'DEV'){
-        e = new Error(`Error with getting data summary. Cause: ${err.message}`);
-        console.log(err);
-      }else{
-        e = new Error(`Error with getting data summary with error code ${err.status} . Try again`)
-      }
-      logger.error(err)
-      return e.message;
-    }
-    
-    
   }
     
 }

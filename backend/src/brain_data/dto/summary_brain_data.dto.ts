@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { std, mean, round } from "mathjs";
-
+import { createLogger, format, transports } from 'winston';
 
 export class SummaryBrainData {
     [key: string]: string | number | undefined;
@@ -29,6 +29,23 @@ export class SummaryBrainData {
 }
 
 export function summarize (filteredData: any[], threshold: number) {
+    
+    const logger = createLogger({
+        level: 'error',
+        format: format.combine(
+          format.timestamp({
+            format: 'YYYY-MM-DD HH:mm:ss'
+          }),
+          format.errors({ stack: process.env.ENV === 'DEV'}),
+          format.json(),
+          format.splat()
+        ),
+        transports: [
+          new transports.File({ filename: process.env.ENV === 'DEV' ? 'test-logs.log' : 'error-logs.log', level: 'error'})
+        ]
+    });
+  
+    
     const summaryArr:SummaryBrainData[] = [new SummaryBrainData("-"), new SummaryBrainData("Male"), new SummaryBrainData("Female")];
     const avg_death_arr: number[][] = [[],[],[]];
     filteredData.forEach(data => {
@@ -93,11 +110,13 @@ export function summarize (filteredData: any[], threshold: number) {
     });
 
       if(filteredData.length > 0 && filteredData.length <= threshold){
-        throw new HttpException({
-          status: HttpStatus.PARTIAL_CONTENT,
-          error: `There are ${filteredData.length} participants that fit the criteriea. For the sake of privacy, we will not show the specifics. Please contact us for more info`,
-        }, 
-        HttpStatus.PARTIAL_CONTENT);
+        const err = new HttpException({
+            status: HttpStatus.PARTIAL_CONTENT,
+            error: `There are ${filteredData.length} participants that fit the criteriea. For the sake of privacy, we will not show the specifics. Please contact us for more info`,
+          }, 
+          HttpStatus.PARTIAL_CONTENT);
+        logger.error(err);
+        throw err;
       }else{
         for(const i in avg_death_arr){
           if(avg_death_arr[i].length === 0){
