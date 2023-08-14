@@ -55,6 +55,7 @@ export class BrainDataService {
       }
     }).catch(err => {
       logger.error(err);
+      console.log(err);
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
         error: `Unknown key passed`
