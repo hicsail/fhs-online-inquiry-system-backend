@@ -110,9 +110,12 @@ export function summarize (filteredData: any[], threshold: number) {
     });
 
       if(filteredData.length > 0 && filteredData.length <= threshold){
+        var errorMessage = filteredData.length === 1 ? `There is ${filteredData.length} participant that fit the criteriea. For the sake of privacy, we will not show the specifics. Please contact us for more info` 
+                            : `There are ${filteredData.length} participants that fit the criteriea. For the sake of privacy, we will not show the specifics. Please contact us for more info`;
+
         const err = new HttpException({
             status: HttpStatus.PARTIAL_CONTENT,
-            error: `There are ${filteredData.length} participants that fit the criteriea. For the sake of privacy, we will not show the specifics. Please contact us for more info`,
+            error: errorMessage,
           }, 
           HttpStatus.PARTIAL_CONTENT);
         logger.error(err);
