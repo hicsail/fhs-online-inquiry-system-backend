@@ -25,5 +25,8 @@ services:
       retries: 10
       start_period: 30s
     volumes:
-        - ./fhs_2.sql:/docker-entrypoint-initdb.d/fhs_2.sql
+        - fhs-backend-staging:/var/lib/postgresql/data
+volumes:
+  fhs-backend-staging
+  
 
