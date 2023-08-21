@@ -27,6 +27,6 @@ services:
     volumes:
         - fhs-backend-staging:/var/lib/postgresql/data
 volumes:
-  fhs-backend-staging
+  fhs-backend-staging:
   
 
