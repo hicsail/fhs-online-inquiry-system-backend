@@ -109,27 +109,17 @@ export function summarize (filteredData: any[], threshold: number) {
           }
     });
 
-      if(filteredData.length > 0 && filteredData.length <= threshold){
-        var errorMessage = filteredData.length === 1 ? `There is ${filteredData.length} participant that fit the criteriea. For the sake of privacy, we will not show the specifics. Please contact us for more info` 
-                            : `There are ${filteredData.length} participants that fit the criteriea. For the sake of privacy, we will not show the specifics. Please contact us for more info`;
-
-        const err = new HttpException({
-            status: HttpStatus.PARTIAL_CONTENT,
-            error: errorMessage,
-          }, 
-          HttpStatus.PARTIAL_CONTENT);
-        logger.error(err);
-        throw err;
-      }else{
-        for(const i in avg_death_arr){
-          if(avg_death_arr[i].length === 0){
-            continue;
-          }
-          const mean_calc = round(mean(avg_death_arr[i]),3);
-          const stdDeviation = round(std(avg_death_arr[i]),3);
-          const avgStr = `${mean_calc} ± ${stdDeviation}`;
-          summaryArr[i].average_age_at_death = avgStr;
-        }
-        return summaryArr;
+     
+      
+    for(const i in avg_death_arr){
+      if(avg_death_arr[i].length === 0){
+        continue;
       }
+      const mean_calc = round(mean(avg_death_arr[i]),3);
+      const stdDeviation = round(std(avg_death_arr[i]),3);
+      const avgStr = `${mean_calc} ± ${stdDeviation}`;
+      summaryArr[i].average_age_at_death = avgStr;
+    }
+    return summaryArr;
+      
 }
