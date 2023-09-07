@@ -6,9 +6,7 @@ services:
     restart: always
     depends_on:
       - db
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: hicsail/fhs-online-inquiry-system-backend:main
     ports:
       - 3014:3000
   db:
