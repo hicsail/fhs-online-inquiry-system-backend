@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x", "darwin-arm64"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x", "darwin-arm64", "linux-musl"]
 }
 
 datasource db {
@@ -10,19 +10,38 @@ datasource db {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model brain_data {
-  plus_framid    Int      @id
+  idtype         Int?
+  id             Int?
+  framid         Int          @id(map: "brain_data_prim_key")
+  nppmih_hours   Int?
+  nppmih_minutes Int?
+  nprin          Decimal?     @db.Decimal
+  npfix          Int?
+  npfrotispre    Int?
+  npinf          Int?
+  npavas         Int?
+  npftdtau       Int?
+  npftdtdp       Int?
+  npftdt7        Int?
+  nphipscl       Int?
+  pathmnd        Int?
+  pathad         Int?
+  relatauo       Int?
+  plus_idtype    Int?
+  plus_id        Int?
+  plus_framid    Int?
   sex            Int?
   age_core1      Int?
-  race_code      String?  @db.VarChar
+  race_code      String?      @db.VarChar
   edu_core0      Int?
   edu_core17_1   Int?
   edu_core17_2   Int?
   edu_core2372   Int?
-  age_death      Decimal  @db.Decimal
+  age_death      Decimal?     @db.Decimal
   npwhiart       Int?
   npwhimac       Int?
   npwmr          Int?
-  nphipscl       Int?
+  plus_nphipscl  Int?
   npthal         Int?
   npbraak        Int?
   npneur         Int?
@@ -46,13 +65,14 @@ model brain_data {
   nptdpc         Int?
   nptdpd         Int?
   nptdpe         Int?
+  plus_npftdtau  Int?
   nppick         Int?
   npftdt2        Int?
   npcort         Int?
   npprog         Int?
   npftdt5        Int?
   npftdt6        Int?
-  npftdt7        Int?
+  plus_npftdt7   Int?
   npftdt7a       Int?
   npftdt7b       Int?
   npftdt7c       Int?
@@ -60,6 +80,7 @@ model brain_data {
   npftdt8        Int?
   npftdt9        Int?
   npftdt10       Int?
+  plus_npftdtdp  Int?
   npalsmnd       Int?
   npoftd         Int?
   npoftd1        Int?
@@ -74,20 +95,7 @@ model brain_data {
   dmrx_ever      Int?
   liprx_ever     Int?
   smoking_ever   Int?
-  nppmih_hours   Int?
-  nppmih_minutes Int?
-  nprin          Decimal? @db.Decimal
-  npfix          Int?
-  npfrotispre    Int?
-  npinf          Int?
-  npavas         Int?
-  npftdtau       Int?
-  pathmnd        Int?
-  pathad         Int?
-  relatauo       Int?
-  npftdtdp       Int?
-  participants   participants @relation(fields: [plus_framid], references: [framid], onDelete: NoAction, onUpdate: NoAction)
-  
+  participants   participants @relation(fields: [framid], references: [framid], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model core_sequence {
@@ -139,62 +147,6 @@ model core_sequence {
   cogscr              Int?
 
   @@id([framid, core_num])
-}
-
-model np_core {
-  framid      Int       @id @default(autoincrement())
-  npwhiart    Int?
-  npwhimac    Int?
-  npwmr       Int?
-  nphipscl    Int?
-  npthal      Int?
-  npbraak     Int?
-  npneur      Int?
-  npadnc      Int?
-  npdiff      Int?
-  npamy       Int?
-  npold       Int?
-  npold1      Int?
-  npold2      Int?
-  npold3      Int?
-  npold4      Int?
-  npoldd      Int?
-  npoldd1     Int?
-  npoldd2     Int?
-  npoldd3     Int?
-  npoldd4     Int?
-  nparter     Int?
-  nplbod      Int?
-  nptdpa      Int?
-  nptdpb      Int?
-  nptdpc      Int?
-  nptdpd      Int?
-  nptdpe      Int?
-  npftdtau    Int?
-  nppick      Int?
-  npftdt2     Int?
-  npcort      Int?
-  npprog      Int?
-  npftdt5     Int?
-  npftdt6     Int?
-  npftdt7     Int?
-  npftdt7a    Int?
-  npftdt7b    Int?
-  npftdt7c    Int?
-  npftdt7d    Int?
-  npftdt8     Int?
-  npftdt9     Int?
-  npftdt10    Int?
-  npftdtdp    Int?
-  npalsmnd    Int?
-  npoftd      Int?
-  npoftd1     Int?
-  npoftd2     Int?
-  npoftd3     Int?
-  npoftd4     Int?
-  npoftd5     Int?
-  npnit       Int?
-  examdate_np DateTime? @db.Date
 }
 
 model core_tests {
@@ -250,61 +202,111 @@ model core_tests {
   @@id([framid, core_num, type])
 }
 
-model dcdt_dates {
-  framid    Int
-  dcdt_date DateTime @db.Date
-  num_dcdt  Int?
-  sex       Int?
-
-  @@id([framid, dcdt_date])
-}
-
-model derived_dcdt_dates {
-  framid            Int
-  derived_dcdt_date DateTime @db.Date
-  num_derived_dcdt  Int?
-  sex               Int?
-
-  @@id([framid, derived_dcdt_date])
-}
-
-model dvoice_dates {
-  framid      Int
-  dvoice_date DateTime @db.Date
-  sex         Int?
-  
-
-  @@id([framid, dvoice_date])
-}
-
-model mri_dates {
-  framid   Int
-  mri_date DateTime @db.Date
-  sex      Int?
-  
-
-  @@id([framid, mri_date])
-}
-
 model participants {
   framid     Int          @id @default(autoincrement())
-  cohort     Int?
-  id         Int
-  gender     Int
+  idtype     Int?
+  id         Int?
+  sex        Int?
   race       String?      @db.VarChar
   edu_core2  Int?
   edu_core8  Int?
-  mri_count  Int
-  dvoice_count Int
-  brain_data brain_data[] 
   core_tests core_tests[]
+  brain_data brain_data[]
 }
 
 model survival {
-  idtype        Int
-  framid        Int
+  framid        Int       @id @default(autoincrement())
   date_of_death DateTime? @db.Date
-  age_at_death  Int?
+  age_at_death  Decimal?  @db.Decimal
+}
 
-  @@id([idtype, framid])
+model brain_data_plus {
+  temp_idtype   Int?
+  temp_id       Int?
+  temp_framid   Int      @id @default(autoincrement())
+  sex           Int?
+  age_core1     Int?
+  race_code     String?  @db.VarChar
+  edu_core0     Int?
+  edu_core17_1  Int?
+  edu_core17_2  Int?
+  edu_core2372  Int?
+  age_death     Decimal? @db.Decimal
+  npwhiart      Int?
+  npwhimac      Int?
+  npwmr         Int?
+  temp_nphipscl Int?
+  npthal        Int?
+  npbraak       Int?
+  npneur        Int?
+  npadnc        Int?
+  npdiff        Int?
+  npamy         Int?
+  npold         Int?
+  npold1        Int?
+  npold2        Int?
+  npold3        Int?
+  npold4        Int?
+  npoldd        Int?
+  npoldd1       Int?
+  npoldd2       Int?
+  npoldd3       Int?
+  npoldd4       Int?
+  nparter       Int?
+  nplbod        Int?
+  nptdpa        Int?
+  nptdpb        Int?
+  nptdpc        Int?
+  nptdpd        Int?
+  nptdpe        Int?
+  temp_npftdtau Int?
+  nppick        Int?
+  npftdt2       Int?
+  npcort        Int?
+  npprog        Int?
+  npftdt5       Int?
+  npftdt6       Int?
+  temp_npftdt7  Int?
+  npftdt7a      Int?
+  npftdt7b      Int?
+  npftdt7c      Int?
+  npftdt7d      Int?
+  npftdt8       Int?
+  npftdt9       Int?
+  npftdt10      Int?
+  temp_npftdtdp Int?
+  npalsmnd      Int?
+  npoftd        Int?
+  npoftd1       Int?
+  npoftd2       Int?
+  npoftd3       Int?
+  npoftd4       Int?
+  npoftd5       Int?
+  npnit         Int?
+  demrv046      Int?
+  demrv103      Int?
+  hrx_ever      Int?
+  dmrx_ever     Int?
+  liprx_ever    Int?
+  smoking_ever  Int?
+}
+
+model temp_brain_data {
+  idtype         Int?
+  id             Int?
+  framid         Int      @id(map: "brain_data_pkey") @default(autoincrement())
+  nppmih_hours   Int?
+  nppmih_minutes Int?
+  nprin          Decimal? @db.Decimal
+  npfix          Int?
+  npfrotispre    Int?
+  npinf          Int?
+  npavas         Int?
+  npftdtau       Int?
+  npftdtdp       Int?
+  npftdt7        Int?
+  nphipscl       Int?
+  pathmnd        Int?
+  pathad         Int?
+  relatauo       Int?
 }

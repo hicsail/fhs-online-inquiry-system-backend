@@ -79,33 +79,6 @@ export function summarize (filteredData: any[], threshold: number) {
                 summaryArr[0].college_grad++;
               }
             }
-            
-            if(data.participants.mri_count >= 3){
-              summaryArr[data.sex].mri_3++;
-              summaryArr[0].mri_3++;
-            }
-            if(data.participants.mri_count >= 2){
-              summaryArr[data.sex].mri_2++;
-              summaryArr[0].mri_2++;
-            } 
-            if(data.participants.mri_count >= 1){
-              summaryArr[data.sex].mri_1++;
-              summaryArr[0].mri_1++;
-            }
-
-            if(data.participants.dvoice_count >= 3){
-              summaryArr[data.sex].dvoice_3++;
-              summaryArr[0].dvoice_3++;
-            }
-            if(data.participants.dvoice_count >= 2){
-              summaryArr[data.sex].dvoice_2++;
-              summaryArr[0].dvoice_2++;
-            }
-            if(data.participants.dvoice_count >= 1){
-              summaryArr[data.sex].dvoice_1++;
-              summaryArr[0].dvoice_1++;
-            }
-
           }
     });
 
